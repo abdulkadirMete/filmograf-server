@@ -2,6 +2,8 @@ const mongoose = require("mongoose");
 const express = require("express");
 const app = express();
 const dotenv = require("dotenv").config();
+var cors = require('cors')
+
 
 mongoose
   .connect(process.env.CONNECTION_STRING)
@@ -20,6 +22,7 @@ const toolRouter = require("./routes/tools");
 const errorHandler = require("./middlewares/error/errorHandler");
 
 app.use(express.json());
+app.use(cors());
 
 // static images
 app.use(express.static(__dirname + '/public'));
