@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 const express = require("express");
 const app = express();
 const dotenv = require("dotenv").config();
-var cors = require('cors')
-
+var cors = require("cors");
 
 mongoose
   .connect(process.env.CONNECTION_STRING)
@@ -21,12 +20,13 @@ const contactRouter = require("./routes/contact");
 const toolRouter = require("./routes/tools");
 const errorHandler = require("./middlewares/error/errorHandler");
 
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 app.use(cors());
+app.use(express.urlencoded({ limit: "10mb", extended: true }));
 
 // static images
-app.use(express.static(__dirname + '/public'));
-app.use('/uploads', express.static('uploads'));
+app.use(express.static(__dirname + "/public"));
+app.use("/uploads", express.static("uploads"));
 
 // routes
 app.use("/api/movies", movieRouter);

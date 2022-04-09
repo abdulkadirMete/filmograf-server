@@ -3,7 +3,8 @@ const errorWrapper = require("../helpers/errorWrapper");
 const User = require("../models/User");
 const CryptoJS = require("crypto-js");
 const verifyUser = require("../middlewares/auth/verifyUser");
-const photoUpload = require("../helpers/profileImage");
+const photoUpload = require("../helpers/profileImage/uploadImageMulter");
+const { cloudinary } = require("../helpers/profileImage/uploadImageCloudinary");
 
 // update user
 router.put(
@@ -74,11 +75,15 @@ router.get(
 // profile image upload
 router.post(
   "/uplaod/image",
-  [verifyUser, photoUpload.single("img")],
+  verifyUser,
   errorWrapper(async (req, res, next) => {
+    const uploadResponse = await cloudinary.uploader.upload(req.body.imgData, {
+      upload_preset: "ml_default",
+      transformation: [{ width: 150, height: 150, crop: "fit" }],
+    });
     const user = await User.findByIdAndUpdate(
       req.user.id,
-      { img: req.savedImage },
+      { img: uploadResponse.url },
       { new: true }
     );
     res.status(200).json(user);
