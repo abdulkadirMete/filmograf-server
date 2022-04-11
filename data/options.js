@@ -1,4 +1,4 @@
-const sliderItemLimit = 32;
+const sliderItemLimit = 20;
 const searchItemLimit = 16;
 const moviePerPage = 20;
 const commentPerPage = 16;

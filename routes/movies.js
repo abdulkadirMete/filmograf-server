@@ -16,6 +16,7 @@ router.get(
 
     const movies = await Movie.find({})
       .select(["name", "img", "release", "imdb"])
+      .sort({ createdAt: -1, _id: -1 })
       .limit(limit)
       .skip(skip);
     res.status(200).json({ count: movieTotal, movies });
