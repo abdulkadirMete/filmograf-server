@@ -1,12 +1,29 @@
 const nodemailer = require("nodemailer");
+const { google } = require("googleapis");
 
+// google api for auth mail
+let accessToken;
+const configureAuth = async () => {
+  const oAuth2Client = new google.auth.OAuth2(
+    process.env.CLIENT_ID,
+    process.env.CLIENT_SECRET,
+    process.env.REDIRECT_URL
+  );
+  oAuth2Client.setCredentials({ refresh_token: process.env.REFRESH_TOKEN });
+  accessToken = await oAuth2Client.getAccessToken();
+};
+configureAuth();
+
+// transporter
 let transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
+  service: "gmail",
   auth: {
+    type: "oAuth2",
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD,
+    clientId: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    refreshToken: process.env.REFRESH_TOKEN,
+    accessToken: accessToken,
   },
 });
 
